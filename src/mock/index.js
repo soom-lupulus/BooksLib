@@ -10,8 +10,15 @@ Mock.setup({
 })
 
 Mock.mock(urls.login_url, 'post', {
-  code: 201,
-  msg: '登陆成功'
+  data: {
+    id: 101,
+    username: '傻子',
+    token: 'adf15105a10df5wa0fc50'
+  },
+  meta: {
+    status: 201,
+    msg: '登陆成功~'
+  }
 })
 Mock.mock(urls.login_url_error, 'post', {
   code: 302,

@@ -1,14 +1,29 @@
 <template>
   <div>
     <div class="navbar-outer">
-        <div class="nav-left"></div>
-        <div class="nav-right">
-            <span @click="centerDialogVisible = true" ref="loginspan" v-show="!isshow">登录/注册</span>
-            <span v-show="isshow">我的账号</span>
-            <span>测试一下</span>
-            <span>测试一下</span>
-            <span>测试一下</span>
-        </div>
+      <div class="nav-left"></div>
+      <div class="nav-right">
+        <span
+          @click="centerDialogVisible = true"
+          ref="loginspan"
+          v-show="!isshow"
+          >登录/注册</span
+        >
+        <el-dropdown  v-show="isshow">
+          <span class="el-dropdown-link">
+            我的账号<i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>个人主页</el-dropdown-item>
+            <el-dropdown-item>我的借阅</el-dropdown-item>
+            <el-dropdown-item>账号设置</el-dropdown-item>
+            <el-dropdown-item divided @click.native="quit">退出</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <span>测试一下</span>
+        <span>测试一下</span>
+        <span>测试一下</span>
+      </div>
     </div>
     <!-- 弹出层 -->
     <el-dialog
@@ -16,6 +31,10 @@
       :visible.sync="centerDialogVisible"
       width="30%"
       center
+      @close="
+        $refs['loginform'].resetFields();
+        $refs['registerform'].resetFields();
+      "
     >
       <!-- 登录表单 -->
       <el-form
@@ -39,9 +58,7 @@
         </el-form-item>
         <el-form-item>
           <el-button @click="centerDialogVisible = false">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="submitForm('loginform')"
+          <el-button type="primary" @click="submitForm('loginform')"
             >登录</el-button
           >
         </el-form-item>
@@ -173,6 +190,7 @@ export default {
     }
   },
   methods: {
+    // 提交表单
     submitForm (formName) {
       this.$refs[formName].validate(async (valid) => {
         // 如果表单合法
@@ -181,8 +199,10 @@ export default {
           if (formName === 'loginform') {
             const { data: res } = await this.$http.post('/login')
             // 登陆成功
-            if (res.code === 201) {
+            if (res.meta.status === 201) {
               this.isshow = !this.isshow
+              // 将token保存在sessionStorage中
+              sessionStorage.setItem('token', res.data.token)
               this.$message({
                 message: res.msg,
                 type: 'success'
@@ -220,6 +240,16 @@ export default {
           return false
         }
       })
+    },
+    // 退出
+    quit () {
+      this.isshow = !this.isshow
+      // 清除sessionStorage
+      sessionStorage.removeItem('token')
+      this.$message({
+        type: 'success',
+        message: '退出成功~'
+      })
     }
   }
 }
@@ -242,10 +272,10 @@ export default {
       color: #ffffff;
     }
   }
-  .nav-right{
-      display: flex;
-      justify-content: space-evenly;
-      flex-direction: row-reverse;
+  .nav-right {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row-reverse;
   }
 }
 </style>
