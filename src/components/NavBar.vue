@@ -15,7 +15,7 @@
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>个人主页</el-dropdown-item>
-            <el-dropdown-item>我的借阅</el-dropdown-item>
+            <el-dropdown-item @click.native="$router.push('/borrowsetting')">我的借阅</el-dropdown-item>
             <el-dropdown-item>账号设置</el-dropdown-item>
             <el-dropdown-item divided @click.native="quit">退出</el-dropdown-item>
           </el-dropdown-menu>
