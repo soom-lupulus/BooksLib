@@ -13,7 +13,8 @@ Mock.mock(urls.login_url, 'post', {
   data: {
     id: 101,
     username: '傻子',
-    token: 'adf15105a10df5wa0fc50'
+    token: 'adf15105a10df5wa0fc50',
+    fule: '1532'
   },
   meta: {
     status: 201,

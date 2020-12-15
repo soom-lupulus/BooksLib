@@ -101,6 +101,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data () {
     const validatePass = (rule, value, callback) => {
@@ -197,36 +198,44 @@ export default {
         if (valid) {
           // 如果是登录表单
           if (formName === 'loginform') {
-            const { data: res } = await this.$http.post('/login')
+            const { data: res } = await axios.get('/login', {
+              params: {
+                user: this.login_form.username,
+                password: this.login_form.pazzword
+              }
+            })
             // 登陆成功
             if (res.meta.status === 201) {
               this.isshow = !this.isshow
               // 将token保存在sessionStorage中
               sessionStorage.setItem('token', res.data.token)
               this.$message({
-                message: res.msg,
+                message: res.meta.msg,
                 type: 'success'
               })
               this.centerDialogVisible = false
-            } else if (res.code === 302) {
+            } else if (res.meta.status === 302) {
               this.$message({
-                message: res.msg,
+                message: res.meta.msg,
                 type: 'error'
               })
             }
           }
           // 如果是注册表单
           if (formName === 'registerform') {
-            const { data: res } = await this.$http.post('/logine')
-            if (res.code === 200) {
+            const { data: res } = await this.$http.post('/register', {
+              user: this.register_form.username,
+              password: this.register_form.pazzword
+            })
+            if (res.meta.status === 200) {
               this.$message({
                 message: '注册成功~',
                 type: 'success'
               })
               this.centerDialogVisible = false
-            } else if (res.code === 302) {
+            } else if (res.meta.status === 302) {
               this.$message({
-                message: res.msg,
+                message: res.meta.msg,
                 type: 'error'
               })
             }

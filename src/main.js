@@ -10,11 +10,13 @@ import './assets/global.css'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 // 引入mock
-import './mock/index'
+// import './mock/index'
 // 引入axios
 import axios from 'axios'
 const instance = axios.create({
-  baseURL: 'http://192.168.2.125:8000'
+  // baseURL: '/',
+  withCredentials: true
+
 })
 Vue.prototype.$http = instance
 Vue.use(ElementUI)
