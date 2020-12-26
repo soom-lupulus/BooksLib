@@ -14,11 +14,11 @@ import 'element-ui/lib/theme-chalk/index.css'
 // 引入axios
 import axios from 'axios'
 const instance = axios.create({
-  // baseURL: '/',
+  baseURL: 'http://192.168.2.125:8000',
   withCredentials: true
-
 })
 Vue.prototype.$http = instance
+Vue.prototype.$axios = axios
 Vue.use(ElementUI)
 
 Vue.config.productionTip = false

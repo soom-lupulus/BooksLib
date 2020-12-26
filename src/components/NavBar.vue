@@ -6,18 +6,22 @@
         <span
           @click="centerDialogVisible = true"
           ref="loginspan"
-          v-show="!isshow"
+          v-show="!ctoken"
           >登录/注册</span
         >
-        <el-dropdown  v-show="isshow">
+        <el-dropdown v-show="ctoken">
           <span class="el-dropdown-link">
             我的账号<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>个人主页</el-dropdown-item>
-            <el-dropdown-item @click.native="$router.push('/borrowsetting')">我的借阅</el-dropdown-item>
-            <el-dropdown-item>账号设置</el-dropdown-item>
-            <el-dropdown-item divided @click.native="quit">退出</el-dropdown-item>
+            <el-dropdown-item>我的借阅</el-dropdown-item>
+            <el-dropdown-item @click.native="$router.push('/account')"
+              >账号设置</el-dropdown-item
+            >
+            <el-dropdown-item divided @click.native="quit"
+              >退出</el-dropdown-item
+            >
           </el-dropdown-menu>
         </el-dropdown>
         <span>测试一下</span>
@@ -101,7 +105,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
   data () {
     const validatePass = (rule, value, callback) => {
@@ -185,9 +188,7 @@ export default {
           { required: true, message: '请再次输入密码', trigger: 'blur' },
           { validator: validatePass2, trigger: 'blur' }
         ]
-      },
-      // 登录后的span显示
-      isshow: false
+      }
     }
   },
   methods: {
@@ -198,11 +199,9 @@ export default {
         if (valid) {
           // 如果是登录表单
           if (formName === 'loginform') {
-            const { data: res } = await axios.get('/login', {
-              params: {
-                user: this.login_form.username,
-                password: this.login_form.pazzword
-              }
+            const { data: res } = await this.$axios.post('/login', {
+              user: this.login_form.username,
+              password: this.login_form.pazzword
             })
             // 登陆成功
             if (res.meta.status === 201) {
@@ -214,6 +213,8 @@ export default {
                 type: 'success'
               })
               this.centerDialogVisible = false
+              // 刷新页面
+              this.$router.go(0)
             } else if (res.meta.status === 302) {
               this.$message({
                 message: res.meta.msg,
@@ -227,7 +228,7 @@ export default {
               user: this.register_form.username,
               password: this.register_form.pazzword
             })
-            if (res.meta.status === 200) {
+            if (res.meta.status === 201) {
               this.$message({
                 message: '注册成功~',
                 type: 'success'
@@ -252,15 +253,42 @@ export default {
     },
     // 退出
     quit () {
-      this.isshow = !this.isshow
+      // 切换按钮状态,删除cookie
+      const keys = document.cookie.match(/[^ =;]+(?=)/g)
+      if (keys) {
+        for (let i = keys.length; i--;) {
+          document.cookie = keys[i] + '=0;expires=' + new Date(0).toUTCString()
+        }
+      }
       // 清除sessionStorage
       sessionStorage.removeItem('token')
       this.$message({
         type: 'success',
         message: '退出成功~'
       })
+      // 刷新页面
+      this.$router.go(0)
     }
-  }
+  },
+  computed: {
+    // 登录后的span显示
+    ctoken () {
+      const all = document.cookie
+      if (all === '') return false
+      const list = all.split('; ')
+      // console.log(list)
+      for (let i = 0; i < list.length; ++i) {
+        const cookie = list[i]
+        const p = cookie.indexOf('=')
+        const name = cookie.substring(0, p)
+        const value = cookie.substring(p + 1)
+        if (name !== 'ctoken') continue
+        return Boolean(value)
+      }
+      return false
+    }
+  },
+  mounted () {}
 }
 </script>
 
