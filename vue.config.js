@@ -5,7 +5,7 @@ module.exports = {
     open: true, // 浏览器自动打开页面
     proxy: {
       '/login': {
-        target: 'http://192.168.2.125:8000/',
+        target: 'http://www.polimin.top:80/',
         secure: false,
         // ws: true,
         changeOrigin: true
@@ -14,7 +14,7 @@ module.exports = {
         // }
       },
       '/account/alter': {
-        target: 'http://192.168.2.125:8000/',
+        target: 'http://www.polimin.top:80/',
         secure: false,
         // ws: true,
         changeOrigin: true
@@ -23,7 +23,7 @@ module.exports = {
         // }
       },
       '/avatar/upload': {
-        target: 'http://192.168.2.125:8000/',
+        target: 'http://www.polimin.top:80/',
         secure: false,
         changeOrigin: true
       }

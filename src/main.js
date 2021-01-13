@@ -14,7 +14,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 // 引入axios
 import axios from 'axios'
 const instance = axios.create({
-  baseURL: 'http://192.168.2.125:8000',
+  baseURL: 'http://www.polimin.top:80',
   withCredentials: true
 })
 Vue.prototype.$http = instance
